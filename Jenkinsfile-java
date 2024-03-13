@@ -7,18 +7,29 @@ pipeline {
                 git url: 'https://github.com/n-lap/Homework_Jenkins', branch: 'main'
             }
         }
-        stage('Build') {
+        stage('Build and module testing') {
             steps {
                 script {
 
-                    def Dockerfile = 'java-hello-project/demo/demo/Dockerfile'
-                    def context = "java-hello-project/demo/demo"
-
-                    sh "docker build -t vitalyl1343/hello-java:${version} -f ${Dockerfile} ${context}"
-                    withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'dockerhub_username', passwordVariable: 'dockerhub_password')]) {
-                        sh "docker login -u ${dockerhub_username} -p ${dockerhub_password}"
-                        sh "docker push vitalyl1343/hello-java:${version}"
-                    }
+                    def Dockerfile = 'complete/Dockerfile'
+                    def context = "complete"
+                    sh "docker build -t n-lap/ver1 -f ${Dockerfile} ${context}"
+                    sh "docker run -dp 127.0.0.1:8081:8081 vvv n-lap/ver1"
+                    sh "curl 'http://localhost:8081'"
+                }
+            }
+        }
+        stage('Deploy docker container') {
+            steps {
+                script {
+                    sh "docker run -dp 127.0.0.1:8081:8081 vvv n-lap/ver1"
+                }
+            }
+        }
+        stage('Check application') {
+            steps {
+                script {
+                    sh "curl 'http://localhost:8081'"
                 }
             }
         }
