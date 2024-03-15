@@ -1,10 +1,5 @@
 FROM openjdk:17-alpine AS BUILD_IMAGE
 RUN apk add --no-cache binutils
-
-ENV APP_HOME=/root/dev/myapp/
-RUN mkdir -p $APP_HOME
-WORKDIR $APP_HOME
-COPY . $APP_HOME
 RUN $JAVA_HOME/bin/jlink \
          --verbose \
          --add-modules ALL-MODULE-PATH \
