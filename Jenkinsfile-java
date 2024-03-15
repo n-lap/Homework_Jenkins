@@ -4,34 +4,41 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
-                git url: 'https://github.com/n-lap/Homework_Jenkins', branch: 'main'
+                git url: 'https://github.com/n-lap/Homework_Jenkins/tree/main/complete', branch: 'main'
             }
         }
-        stage('Build and module testing') {
+        stage('Build') {
             steps {
                 script {
-
-                    def Dockerfile = 'complete/Dockerfile'
-                    def context = "complete"
-                    sh "docker build -t n-lap/ver1 -f ${Dockerfile} ${context}"
-                    sh "docker run -dp 127.0.0.1:8081:8081 vvv n-lap/ver1"
-                    sh "curl 'http://localhost:8081'"
+                    sh "./gradlew bootJar -x test --continue"
                 }
             }
         }
-        stage('Deploy docker container') {
+        stage('Test') {
             steps {
                 script {
-                    sh "docker run -dp 127.0.0.1:8081:8081 vvv n-lap/ver1"
+                    sh "./gradlew test"
+                    // after gradlwe build and tests
+                    
                 }
             }
         }
-        stage('Check application') {
-            steps {
-                script {
-                    sh "curl 'http://localhost:8081'"
-                }
-            }
-        }
+        // stage('Deploy docker container') {
+        //     steps {
+        //         script {
+        //             def Dockerfile = 'complete/Dockerfile'
+        //             def context = "complete"
+        //             sh "docker build -t n-lap/ver1 -f ${Dockerfile} ${context}"
+        //             sh "docker run -dp 127.0.0.1:8081:8081 --name helloWorld n-lap/ver1"
+        //         }
+        //     }
+        // }
+        // stage('Check application') {
+        //     steps {
+        //         script {
+        //             sh 'sleep 5 && curl http://localhost:8081'
+        //         }
+        //     }
+        // }
     }
 }

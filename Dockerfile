@@ -5,8 +5,6 @@ ENV APP_HOME=/root/dev/myapp/
 RUN mkdir -p $APP_HOME
 WORKDIR $APP_HOME
 COPY . $APP_HOME
-RUN ./gradlew bootJar -x test --continue
-RUN ./gradlew test
 RUN $JAVA_HOME/bin/jlink \
          --verbose \
          --add-modules ALL-MODULE-PATH \
@@ -21,7 +19,7 @@ ENV JAVA_HOME=/jre
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 RUN mkdir /app $JAVA_HOME
 COPY --from=BUILD_IMAGE /customjre $JAVA_HOME
-COPY --from=BUILD_IMAGE /root/dev/myapp/build/libs/testing-web-0.0.1.jar /app
+COPY /root/dev/myapp/build/libs/testing-web-0.0.1.jar /app
 WORKDIR /app
 EXPOSE 8081
 ENTRYPOINT ["/jre/bin/java","-jar","/app/testing-web-0.0.1.jar"]
