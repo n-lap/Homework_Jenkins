@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone') {
+            steps {
+                git url: 'https://github.com/n-lap/Homework_Jenkins', branch: 'main'
+            }
+        }
+        stage('Build') {
+            steps {
+                script {
+                    sh "./gradlew bootJar -x test --continue"
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                script {
+                    sh "./gradlew test"
+                    // after gradlwe build and tests
+                    
+                }
+            }
+        }
+        stage('Deploy docker container') {
+            steps {
+                script {
+                    def Dockerfile = 'Dockerfile'
+                    def context = "dockerBuild"
+                    sh "docker build -t ver1 -f ${Dockerfile} ${context}"
+                    sh "docker run -dp 127.0.0.1:8081:8081 --name helloWorld ver1"
+                }
+            }
+        }
+        stage('Check application') {
+            steps {
+                script {
+                    sh 'sleep 5 && curl http://localhost:8081'
+                }
+            }
+        }
+    }
+}
