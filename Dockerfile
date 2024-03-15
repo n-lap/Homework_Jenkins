@@ -19,7 +19,7 @@ ENV JAVA_HOME=/jre
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 RUN mkdir /app $JAVA_HOME
 COPY --from=BUILD_IMAGE /customjre $JAVA_HOME
-COPY /root/dev/myapp/build/libs/testing-web-0.0.1.jar /app
+COPY /build/libs/testing-web-0.0.1.jar /app
 WORKDIR /app
 EXPOSE 8081
 ENTRYPOINT ["/jre/bin/java","-jar","/app/testing-web-0.0.1.jar"]
